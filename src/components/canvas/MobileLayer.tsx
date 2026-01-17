@@ -23,34 +23,56 @@ const BrowserStack = () => {
                                     <div className="w-3 h-3 rounded-full bg-[#28c840]" />
                                 </div>
                                 <div className="ml-4 bg-[#050505] px-4 py-1.5 rounded-md text-[10px] text-cyan-400/80 font-mono flex-1 max-w-[400px] border border-white/5">
-                                    https://aswinandro.dev/portfolio
+                                    localhost:3000/dev
                                 </div>
                             </div>
                             
-                            {/* Browser Content */}
-                            <div className="flex-1 p-8 grid grid-cols-12 gap-6 bg-[radial-gradient(circle_at_top_right,rgba(0,242,255,0.05),transparent)]">
-                                <div className="col-span-12 mb-2">
-                                    <div className="text-2xl font-bold bg-gradient-to-r from-white to-white/40 bg-clip-text text-transparent">Creative Frontend Engineering</div>
-                                    <div className="text-[10px] font-mono text-cyan-500/60 uppercase tracking-widest mt-1">Responsive • Interactive • High Performance</div>
-                                </div>
-                                
-                                {skillsData[2].skills.slice(0, 6).map((skill, i) => (
-                                    <div key={skill} className="col-span-4 bg-white/5 border border-white/10 p-4 rounded-xl hover:bg-white/[0.08] hover:border-cyan-500/50 transition-all group/item">
-                                        <div className="text-cyan-400 font-bold mb-1 text-sm">{skill}</div>
-                                        <div className="text-[9px] text-white/40 leading-tight">Implementing pixel-perfect components with modern frameworks.</div>
-                                        <div className="mt-3 h-[2px] bg-white/10 rounded-full overflow-hidden">
-                                            <div className="h-full bg-cyan-500" style={{ width: `${85 - i * 5}%` }} />
+                            {/* Developer Workspace */}
+                            <div className="flex-1 flex">
+                                {/* Sidebar */}
+                                <div className="w-48 bg-[#1a1a2e] border-r border-white/5 p-3">
+                                    <div className="text-[10px] text-cyan-400 font-mono mb-3 uppercase tracking-wider">Explorer</div>
+                                    <div className="space-y-1 text-[9px] font-mono text-white/60">
+                                        <div className="flex items-center gap-1 hover:bg-white/5 px-1 py-0.5 rounded">
+                                            <span>📁</span> src
+                                        </div>
+                                        <div className="flex items-center gap-1 hover:bg-white/5 px-1 py-0.5 rounded ml-3">
+                                            <span>📁</span> components
+                                        </div>
+                                        <div className="flex items-center gap-1 hover:bg-white/5 px-1 py-0.5 rounded ml-6 bg-white/10">
+                                            <span>⚛️</span> Portfolio.tsx
+                                        </div>
+                                        <div className="flex items-center gap-1 hover:bg-white/5 px-1 py-0.5 rounded ml-6">
+                                            <span>⚛️</span> Header.tsx
+                                        </div>
+                                        <div className="flex items-center gap-1 hover:bg-white/5 px-1 py-0.5 rounded ml-3">
+                                            <span>📁</span> pages
                                         </div>
                                     </div>
-                                ))}
+                                </div>
                                 
-                                <div className="col-span-12 mt-4 flex items-center justify-between border-t border-white/5 pt-4">
-                                    <div className="flex gap-2">
-                                        {['Next.js', 'Tailwind', 'GSAP'].map(tag => (
-                                            <span key={tag} className="text-[8px] bg-cyan-500/10 text-cyan-400 px-2 py-0.5 rounded border border-cyan-500/20">{tag}</span>
-                                        ))}
+                                {/* Main Content */}
+                                <div className="flex-1 flex flex-col">
+                                    {/* Code Editor */}
+                                    <div className="flex-1 bg-[#0d0d0f] p-4 font-mono text-[9px] leading-relaxed">
+                                        <div className="text-purple-400">import <span className="text-cyan-300">React</span> from <span className="text-green-400">'react'</span>;</div>
+                                        <div className="text-purple-400 mt-2">export default function <span className="text-yellow-300">Portfolio</span>() {'{'}</div>
+                                        <div className="ml-4 text-gray-400">return (</div>
+                                        <div className="ml-8 text-cyan-300">&lt;div <span className="text-purple-400">className</span>=<span className="text-green-400">"portfolio"</span>&gt;</div>
+                                        <div className="ml-12 text-cyan-300">&lt;h1&gt;<span className="text-white">Aswin Andro</span>&lt;/h1&gt;</div>
+                                        <div className="ml-12 text-cyan-300">&lt;p&gt;<span className="text-white">System Architect</span>&lt;/p&gt;</div>
+                                        <div className="ml-8 text-cyan-300">&lt;/div&gt;</div>
+                                        <div className="ml-4 text-gray-400">);</div>
+                                        <div className="text-purple-400">{'}'}</div>
                                     </div>
-                                    <div className="text-[9px] text-white/20 font-mono">RENDER_LATENCY: 14ms</div>
+                                    
+                                    {/* Console */}
+                                    <div className="h-24 bg-[#0a0a0c] border-t border-white/5 p-2 font-mono text-[8px]">
+                                        <div className="text-green-400">✓ Compiled successfully in 1.2s</div>
+                                        <div className="text-cyan-400 mt-1">✓ React components: 24 optimized</div>
+                                        <div className="text-white/40 mt-1">✓ Performance score: 98/100</div>
+                                        <div className="text-white/20 mt-1">Ready on http://localhost:3000</div>
+                                    </div>
                                 </div>
                             </div>
                         </div>
@@ -102,49 +124,82 @@ const PhoneFrame = () => {
                     </mesh>
 
                     <Html transform position={[0, 0, 0.21]} distanceFactor={4.5}>
-                        <div className="w-[300px] h-[600px] bg-black rounded-[42px] overflow-hidden border-[6px] border-[#1a1a1e] relative shadow-[0_0_80px_rgba(139,92,246,0.25)] flex flex-col">
+                        <div className="w-[300px] h-[600px] bg-gradient-to-b from-purple-900/30 to-black rounded-[42px] overflow-hidden border-[6px] border-[#1a1a1e] relative shadow-[0_0_80px_rgba(139,92,246,0.25)] flex flex-col">
                             {/* Status Bar */}
-                            <div className="h-7 pt-1 px-8 flex justify-between items-center z-20">
-                                <span className="text-[10px] text-white font-medium">9:41</span>
-                                <div className="flex gap-1.5 items-center">
-                                    <div className="w-3 h-2 border border-white/40 rounded-[2px]" />
-                                    <div className="w-3 h-3 bg-white/20 rounded-full" />
+                            <div className="h-11 pt-2 px-6 flex justify-between items-center z-20">
+                                <span className="text-[11px] text-white font-semibold">9:41</span>
+                                <div className="flex gap-1 items-center">
+                                    <div className="flex gap-[2px]">
+                                        <div className="w-[3px] h-2 bg-white rounded-sm opacity-40" />
+                                        <div className="w-[3px] h-2.5 bg-white rounded-sm opacity-60" />
+                                        <div className="w-[3px] h-3 bg-white rounded-sm" />
+                                    </div>
+                                    <svg className="w-3 h-3 ml-1" viewBox="0 0 12 12" fill="white">
+                                        <path d="M6 0L7 4H12L8 7L9 12L6 9L3 12L4 7L0 4H5L6 0Z"/>
+                                    </svg>
+                                    <div className="w-5 h-2.5 border-2 border-white/60 rounded-sm relative ml-1">
+                                        <div className="absolute inset-0.5 bg-white rounded-[1px]"/>
+                                        <div className="absolute -right-[3px] top-1/2 -translate-y-1/2 w-[2px] h-1 bg-white/60 rounded-r"/>
+                                    </div>
                                 </div>
                             </div>
                             
-                            <div className="absolute top-0 left-1/2 -translate-x-1/2 w-1/3 h-6 bg-[#1a1a1e] rounded-b-2xl z-20" />
+                            <div className="absolute top-0 left-1/2 -translate-x-1/2 w-1/3 h-7 bg-[#0a0a0a] rounded-b-3xl z-30" />
                             
                             {/* App Content */}
-                            <div className="flex-1 p-6 pt-10 flex flex-col bg-gradient-to-b from-purple-900/20 to-black">
-                                <h3 className="text-xl font-bold bg-gradient-to-r from-purple-400 to-pink-500 bg-clip-text text-transparent mb-6">Mobile Experience</h3>
+                            <div className="flex-1 p-5 pt-8 flex flex-col">
+                                {/* Header */}
+                                <div className="mb-6">
+                                    <h1 className="text-2xl font-bold bg-gradient-to-r from-purple-400 to-pink-500 bg-clip-text text-transparent">My Portfolio</h1>
+                                    <p className="text-purple-300/60 text-xs mt-1">Full Stack Developer</p>
+                                </div>
                                 
-                                <div className="space-y-4">
-                                    <div className="p-4 bg-white/5 border border-white/10 rounded-2xl backdrop-blur-md">
-                                        <div className="w-8 h-8 rounded-lg bg-purple-500/20 flex items-center justify-center mb-3">
-                                            <div className="w-4 h-4 rounded-full bg-purple-500 animate-pulse" />
+                                {/* Profile Card */}
+                                <div className="bg-white/5 border border-white/10 rounded-2xl p-4 mb-5 backdrop-blur-sm">
+                                    <div className="flex items-center gap-3">
+                                        <div className="w-12 h-12 rounded-full bg-gradient-to-br from-purple-500 to-pink-500 flex items-center justify-center text-white font-bold text-lg">
+                                            AA
                                         </div>
-                                        <div className="text-sm font-bold text-white">React Native Architecture</div>
-                                        <div className="text-[10px] text-white/50 mt-1">Building modular, native-speed applications for iOS and Android.</div>
-                                    </div>
-                                    
-                                    <div className="grid grid-cols-2 gap-3">
-                                        {[
-                                            { label: 'Fluid Motion', color: 'bg-blue-500' },
-                                            { label: 'Offline First', color: 'bg-green-500' },
-                                            { label: 'Push Sync', color: 'bg-orange-500' },
-                                            { label: 'Custom UI', color: 'bg-pink-500' }
-                                        ].map(item => (
-                                            <div key={item.label} className="p-3 bg-white/5 border border-white/10 rounded-xl flex flex-col gap-2">
-                                                <div className={`w-1.5 h-1.5 rounded-full ${item.color}`} />
-                                                <div className="text-[9px] font-bold text-white whitespace-nowrap">{item.label}</div>
-                                            </div>
-                                        ))}
+                                        <div>
+                                            <div className="text-white font-semibold text-sm">Aswin Andro</div>
+                                            <div className="text-purple-300/60 text-[10px] font-mono">System Architect</div>
+                                        </div>
                                     </div>
                                 </div>
                                 
-                                <div className="mt-auto pt-4 border-t border-white/5">
-                                    <div className="h-10 bg-gradient-to-r from-purple-600 to-pink-600 rounded-xl flex items-center justify-center text-xs font-bold text-white">
-                                        Launch Environment
+                                {/* Stats Grid */}
+                                <div className="grid grid-cols-2 gap-3 mb-5">
+                                    <div className="bg-gradient-to-br from-purple-500/20 to-purple-600/10 border border-purple-500/20 rounded-2xl p-4">
+                                        <div className="text-purple-300/60 text-[10px] mb-1">Projects</div>
+                                        <div className="text-white text-2xl font-bold">25+</div>
+                                    </div>
+                                    <div className="bg-gradient-to-br from-cyan-500/20 to-cyan-600/10 border border-cyan-500/20 rounded-2xl p-4">
+                                        <div className="text-cyan-300/60 text-[10px] mb-1">Skills</div>
+                                        <div className="text-white text-2xl font-bold">40+</div>
+                                    </div>
+                                    <div className="bg-gradient-to-br from-pink-500/20 to-pink-600/10 border border-pink-500/20 rounded-2xl p-4">
+                                        <div className="text-pink-300/60 text-[10px] mb-1">Experience</div>
+                                        <div className="text-white text-xl font-bold">5+ Yrs</div>
+                                    </div>
+                                    <div className="bg-gradient-to-br from-green-500/20 to-green-600/10 border border-green-500/20 rounded-2xl p-4">
+                                        <div className="text-green-300/60 text-[10px] mb-1">Clients</div>
+                                        <div className="text-white text-2xl font-bold">15+</div>
+                                    </div>
+                                </div>
+                                
+                                {/* Bottom Nav */}
+                                <div className="mt-auto bg-[#1a1a1e] border border-white/5 rounded-2xl p-3 flex justify-around items-center">
+                                    <div className="w-10 h-10 rounded-xl bg-purple-500 flex items-center justify-center">
+                                        <div className="w-5 h-5 rounded bg-white/20" />
+                                    </div>
+                                    <div className="w-10 h-10 rounded-xl bg-white/5 flex items-center justify-center">
+                                        <div className="w-5 h-5 rounded-full bg-white/20" />
+                                    </div>
+                                    <div className="w-10 h-10 rounded-xl bg-white/5 flex items-center justify-center">
+                                        <div className="w-5 h-5 rounded bg-white/20" />
+                                    </div>
+                                    <div className="w-10 h-10 rounded-xl bg-white/5 flex items-center justify-center">
+                                        <div className="w-5 h-5 rounded-full bg-white/20" />
                                     </div>
                                 </div>
                             </div>
