@@ -80,7 +80,8 @@ export const UnifiedEngine = () => {
         <ambientLight intensity={1.5} />
         <pointLight position={[20, 30, 20]} intensity={2} color="#00f2ff" />
         <pointLight position={[-20, 0, 10]} intensity={1.5} color="#ff00ff" />
-        <pointLight position={[0, -20, 10]} intensity={2} color="#00ff41" />
+        <pointLight position={[15, -25, 15]} intensity={3} color="#8b5cf6" />
+        <pointLight position={[-15, -30, 10]} intensity={2} color="#00ff41" />
         <spotLight position={[0, 50, 0]} angle={0.3} penumbra={1} intensity={5} castShadow />
 
         <Suspense fallback={null}>
