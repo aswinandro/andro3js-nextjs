@@ -1,89 +1,336 @@
 "use client";
 
-import { useMemo, useRef } from "react";
+import { useMemo, useRef, useEffect } from "react";
 import { useFrame } from "@react-three/fiber";
-import { Html, Float, Box, Text } from "@react-three/drei";
+import { Html, Float, Text } from "@react-three/drei";
 import * as THREE from "three";
-import { techStackIcons, skillsData } from "@/constants";
+import { skillsData } from "@/constants";
 
 const BrowserStack = () => {
+    const textureRef = useRef<THREE.CanvasTexture>(null);
+    
+    useEffect(() => {
+        // Create canvas for browser content
+        const canvas = document.createElement('canvas');
+        canvas.width = 1024;
+        canvas.height = 600;
+        const ctx = canvas.getContext('2d');
+        
+        if (ctx) {
+            // Background
+            ctx.fillStyle = '#0a0a0c';
+            ctx.fillRect(0, 0, canvas.width, canvas.height);
+            
+            // Browser header
+            ctx.fillStyle = '#16161a';
+            ctx.fillRect(0, 0, canvas.width, 40);
+            
+            // Traffic lights
+            ctx.fillStyle = '#ff5f57';
+            ctx.beginPath();
+            ctx.arc(20, 20, 6, 0, Math.PI * 2);
+            ctx.fill();
+            ctx.fillStyle = '#febc2e';
+            ctx.beginPath();
+            ctx.arc(40, 20, 6, 0, Math.PI * 2);
+            ctx.fill();
+            ctx.fillStyle = '#28c840';
+            ctx.beginPath();
+            ctx.arc(60, 20, 6, 0, Math.PI * 2);
+            ctx.fill();
+            
+            // URL bar
+            ctx.fillStyle = '#050505';
+            ctx.fillRect(90, 10, 300, 20);
+            ctx.fillStyle = '#00d9ff';
+            ctx.font = 'bold 12px monospace';
+            ctx.fillText('localhost:3000/dev', 100, 25);
+            
+            // Sidebar
+            ctx.fillStyle = '#1a1a2e';
+            ctx.fillRect(0, 40, 200, canvas.height - 40);
+            
+            // Explorer title
+            ctx.fillStyle = '#00d9ff';
+            ctx.font = 'bold 14px monospace';
+            ctx.fillText('EXPLORER', 20, 70);
+            
+            // File tree
+            ctx.fillStyle = '#ffffff';
+            ctx.globalAlpha = 0.7;
+            ctx.font = '12px monospace';
+            ctx.fillText('📁 src', 20, 100);
+            ctx.fillText('📁 components', 40, 125);
+            ctx.fillStyle = '#00d9ff';
+            ctx.fillText('⚛️ Portfolio.tsx', 60, 150);
+            ctx.fillStyle = '#ffffff';
+            ctx.fillText('⚛️ Header.tsx', 60, 175);
+            ctx.fillText('📁 pages', 40, 200);
+            ctx.globalAlpha = 1;
+            
+            // Code editor area
+            ctx.fillStyle = '#0d0d0f';
+            ctx.fillRect(200, 40, canvas.width - 200, canvas.height - 140);
+            
+            // Code content
+            ctx.font = 'bold 13px monospace';
+            let y = 80;
+            
+            ctx.fillStyle = '#c586c0';
+            ctx.fillText('import ', 220, y);
+            ctx.fillStyle = '#4ec9b0';
+            ctx.fillText('React', 280, y);
+            ctx.fillStyle = '#ffffff';
+            ctx.fillText(' from ', 330, y);
+            ctx.fillStyle = '#ce9178';
+            ctx.fillText("'react'", 380, y);
+            ctx.fillStyle = '#ffffff';
+            ctx.fillText(';', 440, y);
+            
+            y += 40;
+            ctx.fillStyle = '#c586c0';
+            ctx.fillText('export default function ', 220, y);
+            ctx.fillStyle = '#dcdcaa';
+            ctx.fillText('Portfolio', 420, y);
+            ctx.fillStyle = '#ffffff';
+            ctx.fillText('() {', 510, y);
+            
+            y += 30;
+            ctx.fillStyle = '#808080';
+            ctx.fillText('  return (', 220, y);
+            
+            y += 25;
+            ctx.fillStyle = '#4ec9b0';
+            ctx.fillText('    <div ', 220, y);
+            ctx.fillStyle = '#9cdcfe';
+            ctx.fillText('className', 290, y);
+            ctx.fillStyle = '#ffffff';
+            ctx.fillText('=', 370, y);
+            ctx.fillStyle = '#ce9178';
+            ctx.fillText('"portfolio"', 385, y);
+            ctx.fillStyle = '#4ec9b0';
+            ctx.fillText('>', 480, y);
+            
+            y += 25;
+            ctx.fillStyle = '#4ec9b0';
+            ctx.fillText('      <h1>', 220, y);
+            ctx.fillStyle = '#ffffff';
+            ctx.font = 'bold 15px monospace';
+            ctx.fillText('Aswin Andro', 300, y);
+            ctx.font = 'bold 13px monospace';
+            ctx.fillStyle = '#4ec9b0';
+            ctx.fillText('</h1>', 430, y);
+            
+            y += 25;
+            ctx.fillStyle = '#4ec9b0';
+            ctx.fillText('      <p>', 220, y);
+            ctx.fillStyle = '#ffffff';
+            ctx.fillText('System Architect', 280, y);
+            ctx.fillStyle = '#4ec9b0';
+            ctx.fillText('</p>', 440, y);
+            
+            y += 25;
+            ctx.fillText('    </div>', 220, y);
+            
+            y += 25;
+            ctx.fillStyle = '#808080';
+            ctx.fillText('  );', 220, y);
+            
+            y += 25;
+            ctx.fillStyle = '#ffffff';
+            ctx.fillText('}', 220, y);
+            
+            // Console
+            ctx.fillStyle = '#0a0a0c';
+            ctx.fillRect(200, canvas.height - 100, canvas.width - 200, 100);
+            
+            ctx.fillStyle = '#00d9ff';
+            ctx.strokeStyle = '#00d9ff';
+            ctx.lineWidth = 2;
+            ctx.beginPath();
+            ctx.moveTo(200, canvas.height - 100);
+            ctx.lineTo(canvas.width, canvas.height - 100);
+            ctx.stroke();
+            
+            ctx.font = 'bold 11px monospace';
+            ctx.fillStyle = '#00ff41';
+            ctx.fillText('✓ Compiled successfully in 1.2s', 220, canvas.height - 75);
+            
+            ctx.fillStyle = '#00d9ff';
+            ctx.fillText('✓ React components: 24 optimized', 220, canvas.height - 55);
+            
+            ctx.fillStyle = '#ffffff';
+            ctx.globalAlpha = 0.5;
+            ctx.fillText('✓ Performance score: 98/100', 220, canvas.height - 35);
+            
+            ctx.fillText('Ready on http://localhost:3000', 220, canvas.height - 15);
+            ctx.globalAlpha = 1;
+            
+            // Create texture
+            const texture = new THREE.CanvasTexture(canvas);
+            texture.needsUpdate = true;
+            (textureRef as any).current = texture;
+        }
+    }, []);
+
     return (
         <group position={[-6, 0, 0]}>
             <Float speed={1.5} rotationIntensity={0.2} floatIntensity={0.5}>
-                <mesh>
-                    <boxGeometry args={[11, 6.5, 0.2]} />
-                    <meshStandardMaterial color="#111" roughness={0.1} metalness={0.8} />
-                    <Html transform position={[0, 0, 0.11]} distanceFactor={6}>
-                        <div className="w-[850px] h-[500px] bg-[#0a0a0c] rounded-xl overflow-hidden border border-white/10 shadow-[0_0_50px_rgba(0,242,255,0.15)] flex flex-col">
-                            {/* Browser Header */}
-                            <div className="h-10 bg-[#16161a] flex items-center px-4 gap-2 border-b border-white/5">
-                                <div className="flex gap-1.5">
-                                    <div className="w-3 h-3 rounded-full bg-[#ff5f57]" />
-                                    <div className="w-3 h-3 rounded-full bg-[#febc2e]" />
-                                    <div className="w-3 h-3 rounded-full bg-[#28c840]" />
-                                </div>
-                                <div className="ml-4 bg-[#050505] px-4 py-1.5 rounded-md text-[10px] text-cyan-400/80 font-mono flex-1 max-w-[400px] border border-white/5">
-                                    localhost:3000/dev
-                                </div>
-                            </div>
-                            
-                            {/* Developer Workspace */}
-                            <div className="flex-1 flex">
-                                {/* Sidebar */}
-                                <div className="w-48 bg-[#1a1a2e] border-r border-white/5 p-3">
-                                    <div className="text-[10px] text-cyan-400 font-mono mb-3 uppercase tracking-wider">Explorer</div>
-                                    <div className="space-y-1 text-[9px] font-mono text-white/60">
-                                        <div className="flex items-center gap-1 hover:bg-white/5 px-1 py-0.5 rounded">
-                                            <span>📁</span> src
-                                        </div>
-                                        <div className="flex items-center gap-1 hover:bg-white/5 px-1 py-0.5 rounded ml-3">
-                                            <span>📁</span> components
-                                        </div>
-                                        <div className="flex items-center gap-1 hover:bg-white/5 px-1 py-0.5 rounded ml-6 bg-white/10">
-                                            <span>⚛️</span> Portfolio.tsx
-                                        </div>
-                                        <div className="flex items-center gap-1 hover:bg-white/5 px-1 py-0.5 rounded ml-6">
-                                            <span>⚛️</span> Header.tsx
-                                        </div>
-                                        <div className="flex items-center gap-1 hover:bg-white/5 px-1 py-0.5 rounded ml-3">
-                                            <span>📁</span> pages
-                                        </div>
-                                    </div>
-                                </div>
-                                
-                                {/* Main Content */}
-                                <div className="flex-1 flex flex-col">
-                                    {/* Code Editor */}
-                                    <div className="flex-1 bg-[#0d0d0f] p-4 font-mono text-[9px] leading-relaxed">
-                                        <div className="text-purple-400">import <span className="text-cyan-300">React</span> from <span className="text-green-400">'react'</span>;</div>
-                                        <div className="text-purple-400 mt-2">export default function <span className="text-yellow-300">Portfolio</span>() {'{'}</div>
-                                        <div className="ml-4 text-gray-400">return (</div>
-                                        <div className="ml-8 text-cyan-300">&lt;div <span className="text-purple-400">className</span>=<span className="text-green-400">"portfolio"</span>&gt;</div>
-                                        <div className="ml-12 text-cyan-300">&lt;h1&gt;<span className="text-white">Aswin Andro</span>&lt;/h1&gt;</div>
-                                        <div className="ml-12 text-cyan-300">&lt;p&gt;<span className="text-white">System Architect</span>&lt;/p&gt;</div>
-                                        <div className="ml-8 text-cyan-300">&lt;/div&gt;</div>
-                                        <div className="ml-4 text-gray-400">);</div>
-                                        <div className="text-purple-400">{'}'}</div>
-                                    </div>
-                                    
-                                    {/* Console */}
-                                    <div className="h-24 bg-[#0a0a0c] border-t border-white/5 p-2 font-mono text-[8px]">
-                                        <div className="text-green-400">✓ Compiled successfully in 1.2s</div>
-                                        <div className="text-cyan-400 mt-1">✓ React components: 24 optimized</div>
-                                        <div className="text-white/40 mt-1">✓ Performance score: 98/100</div>
-                                        <div className="text-white/20 mt-1">Ready on http://localhost:3000</div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </Html>
-                </mesh>
+                <group>
+                    {/* Monitor Frame */}
+                    <mesh>
+                        <boxGeometry args={[11, 6.5, 0.3]} />
+                        <meshStandardMaterial color="#1a1a1a" roughness={0.2} metalness={0.8} />
+                    </mesh>
+                    
+                    {/* Screen with content */}
+                    <mesh position={[0, 0, 0.16]}>
+                        <planeGeometry args={[10.5, 6]} />
+                        <meshStandardMaterial 
+                            map={(textureRef as any).current}
+                            emissive="#00d9ff"
+                            emissiveIntensity={0.1}
+                        />
+                    </mesh>
+                </group>
             </Float>
         </group>
     )
 }
 
 const PhoneFrame = () => {
+    const textureRef = useRef<THREE.CanvasTexture>(null);
+    
+    useEffect(() => {
+        const canvas = document.createElement('canvas');
+        canvas.width = 400;
+        canvas.height = 800;
+        const ctx = canvas.getContext('2d');
+        
+        if (ctx) {
+            // Background gradient
+            const gradient = ctx.createLinearGradient(0, 0, 0, canvas.height);
+            gradient.addColorStop(0, 'rgba(139, 92, 246, 0.4)');
+            gradient.addColorStop(1, '#000000');
+            ctx.fillStyle = gradient;
+            ctx.fillRect(0, 0, canvas.width, canvas.height);
+            
+            // Status bar
+            ctx.fillStyle = '#ffffff';
+            ctx.font = 'bold 16px sans-serif';
+            ctx.fillText('9:41', 30, 30);
+            
+            // Signal bars
+            ctx.fillStyle = 'rgba(255, 255, 255, 0.5)';
+            ctx.fillRect(320, 20, 5, 10);
+            ctx.fillStyle = 'rgba(255, 255, 255, 0.7)';
+            ctx.fillRect(330, 17, 5, 13);
+            ctx.fillStyle = '#ffffff';
+            ctx.fillRect(340, 14, 5, 16);
+            
+            // Battery
+            ctx.strokeStyle = '#ffffff';
+            ctx.lineWidth = 2;
+            ctx.strokeRect(360, 18, 25, 12);
+            ctx.fillStyle = '#ffffff';
+            ctx.fillRect(362, 20, 21, 8);
+            ctx.fillRect(385, 22, 3, 6);
+            
+            // Header
+            ctx.font = 'bold 32px sans-serif';
+            const headerGradient = ctx.createLinearGradient(0, 100, 200, 100);
+            headerGradient.addColorStop(0, '#a78bfa');
+            headerGradient.addColorStop(1, '#ec4899');
+            ctx.fillStyle = headerGradient;
+            ctx.fillText('My Portfolio', 30, 110);
+            
+            ctx.font = 'bold 16px sans-serif';
+            ctx.fillStyle = '#a78bfa';
+            ctx.fillText('Full Stack Developer', 30, 135);
+            
+            // Profile card
+            ctx.fillStyle = 'rgba(255, 255, 255, 0.1)';
+            ctx.strokeStyle = 'rgba(167, 139, 250, 0.3)';
+            ctx.lineWidth = 2;
+            ctx.beginPath();
+            ctx.roundRect(30, 160, canvas.width - 60, 80, 16);
+            ctx.fill();
+            ctx.stroke();
+            
+            // Avatar
+            const avatarGradient = ctx.createLinearGradient(50, 180, 110, 220);
+            avatarGradient.addColorStop(0, '#a78bfa');
+            avatarGradient.addColorStop(1, '#ec4899');
+            ctx.fillStyle = avatarGradient;
+            ctx.beginPath();
+            ctx.arc(80, 200, 25, 0, Math.PI * 2);
+            ctx.fill();
+            
+            ctx.fillStyle = '#ffffff';
+            ctx.font = 'bold 20px sans-serif';
+            ctx.fillText('AA', 68, 208);
+            
+            ctx.font = 'bold 18px sans-serif';
+            ctx.fillText('Aswin Andro', 120, 195);
+            ctx.font = '14px monospace';
+            ctx.fillStyle = '#a78bfa';
+            ctx.fillText('System Architect', 120, 215);
+            
+            // Stats grid
+            const stats = [
+                { label: 'Projects', value: '25+', color: '#a78bfa', x: 30, y: 270 },
+                { label: 'Skills', value: '40+', color: '#06b6d4', x: 210, y: 270 },
+                { label: 'Experience', value: '5+ Yrs', color: '#ec4899', x: 30, y: 400 },
+                { label: 'Clients', value: '15+', color: '#10b981', x: 210, y: 400 }
+            ];
+            
+            stats.forEach(stat => {
+                ctx.fillStyle = `${stat.color}33`;
+                ctx.strokeStyle = `${stat.color}66`;
+                ctx.lineWidth = 2;
+                ctx.beginPath();
+                ctx.roundRect(stat.x, stat.y, 150, 110, 16);
+                ctx.fill();
+                ctx.stroke();
+                
+                ctx.fillStyle = stat.color;
+                ctx.globalAlpha = 0.8;
+                ctx.font = '12px sans-serif';
+                ctx.fillText(stat.label, stat.x + 15, stat.y + 30);
+                
+                ctx.globalAlpha = 1;
+                ctx.font = 'bold 32px sans-serif';
+                ctx.fillStyle = '#ffffff';
+                ctx.fillText(stat.value, stat.x + 15, stat.y + 70);
+            });
+            
+            // Bottom nav
+            ctx.fillStyle = '#1a1a1e';
+            ctx.strokeStyle = 'rgba(139, 92, 246, 0.2)';
+            ctx.lineWidth = 2;
+            ctx.beginPath();
+            ctx.roundRect(30, 700, canvas.width - 60, 60, 16);
+            ctx.fill();
+            ctx.stroke();
+            
+            // Nav icons
+            ctx.fillStyle = '#a78bfa';
+            ctx.fillRect(60, 720, 25, 25);
+            ctx.fillStyle = 'rgba(255, 255, 255, 0.1)';
+            ctx.beginPath();
+            ctx.arc(155, 732, 12, 0, Math.PI * 2);
+            ctx.fill();
+            ctx.fillRect(220, 720, 25, 25);
+            ctx.beginPath();
+            ctx.arc(315, 732, 12, 0, Math.PI * 2);
+            ctx.fill();
+            
+            const texture = new THREE.CanvasTexture(canvas);
+            texture.needsUpdate = true;
+            (textureRef as any).current = texture;
+        }
+    }, []);
+
     const shape = useMemo(() => {
         const s = new THREE.Shape();
         const width = 4.5;
@@ -108,9 +355,26 @@ const PhoneFrame = () => {
         <group position={[6, 0, 0]}>
             <Float speed={2} rotationIntensity={0.5} floatIntensity={0.5}>
                 <group>
+                    {/* Phone Body */}
                     <mesh position={[0, 0, -0.2]}>
                         <extrudeGeometry args={[shape, extrudeSettings]} />
                         <meshStandardMaterial color="#0a0a0a" roughness={0.02} metalness={0.9} />
+                    </mesh>
+                    
+                    {/* Screen with content */}
+                    <mesh position={[0, 0, 0.21]}>
+                        <planeGeometry args={[4, 8.5]} />
+                        <meshStandardMaterial 
+                            map={(textureRef as any).current}
+                            emissive="#8b5cf6"
+                            emissiveIntensity={0.1}
+                        />
+                    </mesh>
+                    
+                    {/* Notch */}
+                    <mesh position={[0, 4, 0.22]}>
+                        <boxGeometry args={[1.5, 0.6, 0.1]} />
+                        <meshStandardMaterial color="#0a0a0a" />
                     </mesh>
 
                     {/* Side Buttons */}
@@ -122,89 +386,6 @@ const PhoneFrame = () => {
                         <boxGeometry args={[0.1, 0.4, 0.1]} />
                         <meshStandardMaterial color="#222" />
                     </mesh>
-
-                    <Html transform position={[0, 0, 0.21]} distanceFactor={4.5}>
-                        <div className="w-[300px] h-[600px] bg-gradient-to-b from-purple-900/30 to-black rounded-[42px] overflow-hidden border-[6px] border-[#1a1a1e] relative shadow-[0_0_80px_rgba(139,92,246,0.25)] flex flex-col">
-                            {/* Status Bar */}
-                            <div className="h-11 pt-2 px-6 flex justify-between items-center z-20">
-                                <span className="text-[11px] text-white font-semibold">9:41</span>
-                                <div className="flex gap-1 items-center">
-                                    <div className="flex gap-[2px]">
-                                        <div className="w-[3px] h-2 bg-white rounded-sm opacity-40" />
-                                        <div className="w-[3px] h-2.5 bg-white rounded-sm opacity-60" />
-                                        <div className="w-[3px] h-3 bg-white rounded-sm" />
-                                    </div>
-                                    <svg className="w-3 h-3 ml-1" viewBox="0 0 12 12" fill="white">
-                                        <path d="M6 0L7 4H12L8 7L9 12L6 9L3 12L4 7L0 4H5L6 0Z"/>
-                                    </svg>
-                                    <div className="w-5 h-2.5 border-2 border-white/60 rounded-sm relative ml-1">
-                                        <div className="absolute inset-0.5 bg-white rounded-[1px]"/>
-                                        <div className="absolute -right-[3px] top-1/2 -translate-y-1/2 w-[2px] h-1 bg-white/60 rounded-r"/>
-                                    </div>
-                                </div>
-                            </div>
-                            
-                            <div className="absolute top-0 left-1/2 -translate-x-1/2 w-1/3 h-7 bg-[#0a0a0a] rounded-b-3xl z-30" />
-                            
-                            {/* App Content */}
-                            <div className="flex-1 p-5 pt-8 flex flex-col">
-                                {/* Header */}
-                                <div className="mb-6">
-                                    <h1 className="text-2xl font-bold bg-gradient-to-r from-purple-400 to-pink-500 bg-clip-text text-transparent">My Portfolio</h1>
-                                    <p className="text-purple-300/60 text-xs mt-1">Full Stack Developer</p>
-                                </div>
-                                
-                                {/* Profile Card */}
-                                <div className="bg-white/5 border border-white/10 rounded-2xl p-4 mb-5 backdrop-blur-sm">
-                                    <div className="flex items-center gap-3">
-                                        <div className="w-12 h-12 rounded-full bg-gradient-to-br from-purple-500 to-pink-500 flex items-center justify-center text-white font-bold text-lg">
-                                            AA
-                                        </div>
-                                        <div>
-                                            <div className="text-white font-semibold text-sm">Aswin Andro</div>
-                                            <div className="text-purple-300/60 text-[10px] font-mono">System Architect</div>
-                                        </div>
-                                    </div>
-                                </div>
-                                
-                                {/* Stats Grid */}
-                                <div className="grid grid-cols-2 gap-3 mb-5">
-                                    <div className="bg-gradient-to-br from-purple-500/20 to-purple-600/10 border border-purple-500/20 rounded-2xl p-4">
-                                        <div className="text-purple-300/60 text-[10px] mb-1">Projects</div>
-                                        <div className="text-white text-2xl font-bold">25+</div>
-                                    </div>
-                                    <div className="bg-gradient-to-br from-cyan-500/20 to-cyan-600/10 border border-cyan-500/20 rounded-2xl p-4">
-                                        <div className="text-cyan-300/60 text-[10px] mb-1">Skills</div>
-                                        <div className="text-white text-2xl font-bold">40+</div>
-                                    </div>
-                                    <div className="bg-gradient-to-br from-pink-500/20 to-pink-600/10 border border-pink-500/20 rounded-2xl p-4">
-                                        <div className="text-pink-300/60 text-[10px] mb-1">Experience</div>
-                                        <div className="text-white text-xl font-bold">5+ Yrs</div>
-                                    </div>
-                                    <div className="bg-gradient-to-br from-green-500/20 to-green-600/10 border border-green-500/20 rounded-2xl p-4">
-                                        <div className="text-green-300/60 text-[10px] mb-1">Clients</div>
-                                        <div className="text-white text-2xl font-bold">15+</div>
-                                    </div>
-                                </div>
-                                
-                                {/* Bottom Nav */}
-                                <div className="mt-auto bg-[#1a1a1e] border border-white/5 rounded-2xl p-3 flex justify-around items-center">
-                                    <div className="w-10 h-10 rounded-xl bg-purple-500 flex items-center justify-center">
-                                        <div className="w-5 h-5 rounded bg-white/20" />
-                                    </div>
-                                    <div className="w-10 h-10 rounded-xl bg-white/5 flex items-center justify-center">
-                                        <div className="w-5 h-5 rounded-full bg-white/20" />
-                                    </div>
-                                    <div className="w-10 h-10 rounded-xl bg-white/5 flex items-center justify-center">
-                                        <div className="w-5 h-5 rounded bg-white/20" />
-                                    </div>
-                                    <div className="w-10 h-10 rounded-xl bg-white/5 flex items-center justify-center">
-                                        <div className="w-5 h-5 rounded-full bg-white/20" />
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </Html>
                 </group>
             </Float>
         </group>
