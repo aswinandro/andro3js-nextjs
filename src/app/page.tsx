@@ -8,13 +8,13 @@ export default function Home() {
       
       <Navbar />
 
-      {/* Hero Content Section (Invisible but provides scroll context) */}
-      <section id="hero" className="h-screen flex flex-col items-center justify-center relative pointer-events-none">
-        <div className="max-w-4xl px-8">
-           <h1 className="text-8xl md:text-[12rem] font-bold text-white leading-none tracking-tighter opacity-10">
+      {/* Hero Content Section */}
+      <section id="hero" className="h-screen flex flex-col items-center justify-center relative pointer-events-none px-4">
+         <div className="max-w-7xl w-full">
+           <h1 className="text-6xl sm:text-7xl md:text-8xl lg:text-[10rem] xl:text-[12rem] font-black text-white leading-[0.9] tracking-tighter opacity-10 select-none" style={{ fontFamily: "'Inter', 'SF Pro Display', -apple-system, BlinkMacSystemFont, sans-serif", fontWeight: 900 }}>
              SYSTEM<br/>ARCHITECT
            </h1>
-        </div>
+         </div>
       </section>
 
       <section id="work" className="h-[200vh]" />
