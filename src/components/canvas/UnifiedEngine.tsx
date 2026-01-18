@@ -8,12 +8,13 @@ import * as THREE from "three";
 import { CloudLayer } from "./CloudLayer";
 import { BackendLayer } from "./BackendLayer";
 import { MobileLayer } from "./MobileLayer";
+import { UserInteractionLayer } from "./UserInteractionLayer";
 
 const CameraRig = () => {
   const scroll = useScroll();
   const { camera } = useThree();
   const initialPos = new THREE.Vector3(0, 25, 20);
-  const targetPos = new THREE.Vector3(0, -35, 20);
+  const targetPos = new THREE.Vector3(0, -28, 20);
 
   useFrame(() => {
     const progress = scroll.offset; // 0 to 1
@@ -85,12 +86,13 @@ export const UnifiedEngine = () => {
         <spotLight position={[0, 50, 0]} angle={0.3} penumbra={1} intensity={5} castShadow />
 
         <Suspense fallback={null}>
-          <ScrollControls pages={5} damping={0.2}>
+          <ScrollControls pages={4} damping={0.2}>
             <CameraRig />
             
             <CloudLayer />
             <BackendLayer />
             <MobileLayer />
+            <UserInteractionLayer />
             
             <Stars radius={100} depth={50} count={5000} factor={4} saturation={0} fade speed={1} />
             <Environment preset="studio" />

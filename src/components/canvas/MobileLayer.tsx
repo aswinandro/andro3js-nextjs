@@ -199,36 +199,96 @@ const BrowserStack = () => {
     )
 }
 
+const UserBackground = () => {
+    // Generate random user nodes
+    const nodes = useMemo(() => {
+        return Array.from({ length: 40 }).map(() => ({
+            x: (Math.random() - 0.5) * 20,
+            y: (Math.random() - 0.5) * 20,
+            z: -5 - Math.random() * 10,
+            scale: 0.1 + Math.random() * 0.2,
+            color: Math.random() > 0.5 ? '#c084fc' : '#f472b6',
+        }));
+    }, []);
+
+    const ringRef = useRef<THREE.Group>(null);
+
+    useFrame((state) => {
+        if (ringRef.current) {
+            ringRef.current.rotation.z += 0.001;
+            ringRef.current.children.forEach((child, i) => {
+                const mesh = child as THREE.Mesh;
+                mesh.scale.setScalar(1 + Math.sin(state.clock.elapsedTime * 0.5 + i) * 0.1);
+            });
+        }
+    });
+
+    return (
+        <group>
+            {/* User Nodes */}
+            {nodes.map((node, i) => (
+                <Float key={i} speed={1} rotationIntensity={0.5} floatIntensity={0.5}>
+                    <mesh position={[node.x, node.y, node.z]}>
+                        <sphereGeometry args={[node.scale, 16, 16]} />
+                        <meshBasicMaterial color={node.color} transparent opacity={0.4} />
+                    </mesh>
+                    {/* Connection lines to nearest neighbors could be expensive, sticking to visual density */}
+                </Float>
+            ))}
+
+            {/* Interaction Rings - Subtle background ripples */}
+            <group ref={ringRef} position={[0, 0, -8]}>
+                {[1, 2, 3].map((scale, i) => (
+                    <mesh key={i} rotation={[0, 0, i]}>
+                        <ringGeometry args={[scale * 4, scale * 4 + 0.02, 64]} />
+                        <meshBasicMaterial color="#c084fc" transparent opacity={0.1 - (i * 0.02)} />
+                    </mesh>
+                ))}
+            </group>
+        </group>
+    );
+};
+
+// Methods for both directions
 const methods = [
-  { name: 'GET', color: '#61affe', label: '/api/v1/users' },
-  { name: 'POST', color: '#49cc90', label: '/auth/login' },
-  { name: 'PUT', color: '#fca130', label: '/user/settings' },
-  { name: 'DELETE', color: '#f93e3e', label: '/cart/item' },
-  { name: 'GRAPHQL', color: '#e535ab', label: 'query { user }' },
+  { name: 'GET', color: '#61affe', label: '/api/v1/users', dir: 'down' },
+  { name: 'POST', color: '#49cc90', label: '/auth/login', dir: 'down' },
+  { name: 'PUT', color: '#fca130', label: '/settings', dir: 'up' }, // Upstream
+  { name: 'DELETE', color: '#f93e3e', label: '/cart', dir: 'up' }, // Upstream
+  { name: 'GRAPHQL', color: '#e535ab', label: 'query { me }', dir: 'down' },
+  { name: 'POST', color: '#27ae60', label: '/upload', dir: 'up' }, // Upstream
 ];
 
 const ApiPacket = ({ method, index }: { method: any, index: number }) => {
     const ref = useRef<THREE.Group>(null);
     const speed = 1 + Math.random();
-    const xOffset = (index - 2.5) * 3.5; // Spread horizontally wider
+    const xOffset = (index - 3) * 2.5;
     const zOffset = Math.random() * 2;
+    const isUp = method.dir === 'up';
 
     useFrame((state, delta) => {
         if (ref.current) {
-            // Falls from top (relative y=30) to bottom (relative y=-10)
-            ref.current.position.y -= speed * 10 * delta;
-            
-            // Reset when it hits bottom
-            if (ref.current.position.y < -10) {
-                ref.current.position.y = 40 + Math.random() * 20;
+            // Movement logic based on direction
+            if (isUp) {
+                // Rise from -10 to 40
+                ref.current.position.y += speed * 8 * delta;
+                if (ref.current.position.y > 40) {
+                    ref.current.position.y = -10 - Math.random() * 10;
+                }
+            } else {
+                // Fall from 40 to -10
+                ref.current.position.y -= speed * 10 * delta;
+                if (ref.current.position.y < -10) {
+                    ref.current.position.y = 40 + Math.random() * 10;
+                }
             }
         }
     });
 
     return (
-        <group ref={ref} position={[xOffset, 20 + Math.random() * 20, zOffset]}>
-             {/* The "Data Stream" Line */}
-             <mesh position={[0, 4, 0]}>
+        <group ref={ref} position={[xOffset, isUp ? -10 : 40, zOffset]}>
+             {/* The "Data Stream" Line - Rotated for direction */}
+             <mesh position={[0, isUp ? -2 : 2, 0]} rotation={[isUp ? Math.PI : 0, 0, 0]}>
                  <cylinderGeometry args={[0.03, 0.03, 8]} />
                  <meshBasicMaterial color={method.color} transparent opacity={0.4} />
              </mesh>
@@ -261,13 +321,17 @@ const ApiPacket = ({ method, index }: { method: any, index: number }) => {
 
 const ApiStream = () => {
     return (
-        <group position={[0, 10, -5]}> 
-            {[...Array(10)].map((_, i) => (
-                <ApiPacket key={i} method={methods[i % 5]} index={i % 5} />
+        <group position={[0, 5, -5]}> {/* Lowered slightly to bridge gap */}
+            {[...Array(12)].map((_, i) => (
+                <ApiPacket key={i} method={methods[i % 6]} index={i} />
             ))}
         </group>
     )
 }
+
+// ... PhoneFrame code ... 
+
+
 
 const PhoneFrame = () => {
     const [texture, setTexture] = useState<THREE.CanvasTexture | null>(null);
@@ -485,20 +549,16 @@ export const MobileLayer = () => {
 
   useFrame(() => {
     // Transition effect:
-    // Starts animating when scroll is at 60%, fully evolved by 85%
-    // Matches the camera movement t: 0.83 (where -25y is)
-    const t = scroll.range(0.6, 0.25);
+    // Starts earlier (0.4) to match the closer position
+    const t = scroll.range(0.4, 0.4);
     
     if (groupRef.current) {
         // Smooth scale in
         const scale = 0.5 + (t * 0.5); 
         groupRef.current.scale.setScalar(scale);
 
-        // Smooth opacity effect (simulated via y-position rise)
-        // It rises from -35 to -25 visually (relative to parent 0)
-        // Actually parent is at -25. Let's offset y.
-        // Start 10 units lower, rise to 0.
-        groupRef.current.position.y = -25 + ((1 - t) * -10);
+        // Rise from -32 to -12 (visual gap closure)
+        groupRef.current.position.y = -12 + ((1 - t) * -20);
         
         // Tilt forward approach
         groupRef.current.rotation.x = (1 - t) * 0.5;
@@ -506,10 +566,11 @@ export const MobileLayer = () => {
   });
 
   return (
-    <group ref={groupRef} position={[0, -25, 0]}>
+    <group ref={groupRef} position={[0, -12, 0]}>
         <BrowserStack />
         <PhoneFrame />
         <ApiStream />
+        <UserBackground />
         {/* Removed static text for cleaner look */}
     </group>
   );
