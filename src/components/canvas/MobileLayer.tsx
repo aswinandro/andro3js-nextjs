@@ -328,7 +328,7 @@ const PhoneFrame = () => {
             
             const newTexture = new THREE.CanvasTexture(canvas);
             newTexture.needsUpdate = true;
-            newTexture.flipY = false; // Don't flip the texture
+            newTexture.flipY = true; // Fix: Flip texture to match 3D plane orientation
             setTexture(newTexture);
             
             console.log('Phone texture created:', newTexture);
