@@ -199,6 +199,76 @@ const BrowserStack = () => {
     )
 }
 
+const methods = [
+  { name: 'GET', color: '#61affe', label: '/api/v1/users' },
+  { name: 'POST', color: '#49cc90', label: '/auth/login' },
+  { name: 'PUT', color: '#fca130', label: '/user/settings' },
+  { name: 'DELETE', color: '#f93e3e', label: '/cart/item' },
+  { name: 'GRAPHQL', color: '#e535ab', label: 'query { user }' },
+];
+
+const ApiPacket = ({ method, index }: { method: any, index: number }) => {
+    const ref = useRef<THREE.Group>(null);
+    const speed = 1 + Math.random();
+    const xOffset = (index - 2.5) * 3.5; // Spread horizontally wider
+    const zOffset = Math.random() * 2;
+
+    useFrame((state, delta) => {
+        if (ref.current) {
+            // Falls from top (relative y=30) to bottom (relative y=-10)
+            ref.current.position.y -= speed * 10 * delta;
+            
+            // Reset when it hits bottom
+            if (ref.current.position.y < -10) {
+                ref.current.position.y = 40 + Math.random() * 20;
+            }
+        }
+    });
+
+    return (
+        <group ref={ref} position={[xOffset, 20 + Math.random() * 20, zOffset]}>
+             {/* The "Data Stream" Line */}
+             <mesh position={[0, 4, 0]}>
+                 <cylinderGeometry args={[0.03, 0.03, 8]} />
+                 <meshBasicMaterial color={method.color} transparent opacity={0.4} />
+             </mesh>
+             
+             {/* The Method Label */}
+             <Text
+                position={[0, 0, 0]}
+                fontSize={0.4}
+                color={method.color}
+                anchorX="center"
+                anchorY="middle"
+             >
+                {method.name}
+             </Text>
+             
+             {/* The Endpoint Label */}
+             <Text
+                position={[0, -0.6, 0]}
+                fontSize={0.25}
+                color="#ffffff"
+                anchorX="center"
+                anchorY="middle"
+                fillOpacity={0.7}
+             >
+                {method.label}
+             </Text>
+        </group>
+    )
+}
+
+const ApiStream = () => {
+    return (
+        <group position={[0, 10, -5]}> 
+            {[...Array(10)].map((_, i) => (
+                <ApiPacket key={i} method={methods[i % 5]} index={i % 5} />
+            ))}
+        </group>
+    )
+}
+
 const PhoneFrame = () => {
     const [texture, setTexture] = useState<THREE.CanvasTexture | null>(null);
     
@@ -439,16 +509,8 @@ export const MobileLayer = () => {
     <group ref={groupRef} position={[0, -25, 0]}>
         <BrowserStack />
         <PhoneFrame />
-        <Text
-            position={[0, 7.5, -8]}
-            fontSize={2.5}
-            color="#fff"
-            anchorX="center"
-            anchorY="middle"
-            fillOpacity={0.08}
-        >
-            FRONTEND & MOBILE
-        </Text>
+        <ApiStream />
+        {/* Removed static text for cleaner look */}
     </group>
   );
 };
