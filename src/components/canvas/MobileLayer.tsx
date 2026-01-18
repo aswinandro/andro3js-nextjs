@@ -1,13 +1,13 @@
 "use client";
 
-import { useMemo, useRef, useEffect } from "react";
+import { useMemo, useRef, useEffect, useState } from "react";
 import { useFrame } from "@react-three/fiber";
 import { Html, Float, Text } from "@react-three/drei";
 import * as THREE from "three";
 import { skillsData } from "@/constants";
 
 const BrowserStack = () => {
-    const textureRef = useRef<THREE.CanvasTexture>(null);
+    const [texture, setTexture] = useState<THREE.CanvasTexture | null>(null);
     
     useEffect(() => {
         // Create canvas for browser content
@@ -167,9 +167,9 @@ const BrowserStack = () => {
             ctx.globalAlpha = 1;
             
             // Create texture
-            const texture = new THREE.CanvasTexture(canvas);
-            texture.needsUpdate = true;
-            (textureRef as any).current = texture;
+            const newTexture = new THREE.CanvasTexture(canvas);
+            newTexture.needsUpdate = true;
+            setTexture(newTexture);
         }
     }, []);
 
@@ -184,14 +184,15 @@ const BrowserStack = () => {
                     </mesh>
                     
                     {/* Screen with content */}
-                    <mesh position={[0, 0, 0.16]}>
-                        <planeGeometry args={[10.5, 6]} />
-                        <meshStandardMaterial 
-                            map={(textureRef as any).current}
-                            emissive="#00d9ff"
-                            emissiveIntensity={0.1}
-                        />
-                    </mesh>
+                    {texture && (
+                        <mesh position={[0, 0, 0.16]}>
+                            <planeGeometry args={[10.5, 6]} />
+                            <meshBasicMaterial 
+                                map={texture}
+                                toneMapped={false}
+                            />
+                        </mesh>
+                    )}
                 </group>
             </Float>
         </group>
@@ -199,7 +200,7 @@ const BrowserStack = () => {
 }
 
 const PhoneFrame = () => {
-    const textureRef = useRef<THREE.CanvasTexture>(null);
+    const [texture, setTexture] = useState<THREE.CanvasTexture | null>(null);
     
     useEffect(() => {
         const canvas = document.createElement('canvas');
@@ -210,126 +211,139 @@ const PhoneFrame = () => {
         if (ctx) {
             // Background gradient
             const gradient = ctx.createLinearGradient(0, 0, 0, canvas.height);
-            gradient.addColorStop(0, 'rgba(139, 92, 246, 0.4)');
+            gradient.addColorStop(0, 'rgba(139, 92, 246, 0.5)');
             gradient.addColorStop(1, '#000000');
             ctx.fillStyle = gradient;
             ctx.fillRect(0, 0, canvas.width, canvas.height);
             
             // Status bar
             ctx.fillStyle = '#ffffff';
-            ctx.font = 'bold 16px sans-serif';
-            ctx.fillText('9:41', 30, 30);
+            ctx.font = 'bold 18px sans-serif';
+            ctx.fillText('9:41', 30, 35);
             
             // Signal bars
             ctx.fillStyle = 'rgba(255, 255, 255, 0.5)';
-            ctx.fillRect(320, 20, 5, 10);
+            ctx.fillRect(310, 22, 6, 12);
             ctx.fillStyle = 'rgba(255, 255, 255, 0.7)';
-            ctx.fillRect(330, 17, 5, 13);
+            ctx.fillRect(322, 18, 6, 16);
             ctx.fillStyle = '#ffffff';
-            ctx.fillRect(340, 14, 5, 16);
+            ctx.fillRect(334, 14, 6, 20);
+            
+            // WiFi icon
+            ctx.beginPath();
+            ctx.arc(350, 24, 3, 0, Math.PI * 2);
+            ctx.fill();
             
             // Battery
             ctx.strokeStyle = '#ffffff';
             ctx.lineWidth = 2;
-            ctx.strokeRect(360, 18, 25, 12);
+            ctx.strokeRect(360, 20, 28, 14);
             ctx.fillStyle = '#ffffff';
-            ctx.fillRect(362, 20, 21, 8);
-            ctx.fillRect(385, 22, 3, 6);
+            ctx.fillRect(362, 22, 24, 10);
+            ctx.fillRect(388, 24, 4, 6);
             
             // Header
-            ctx.font = 'bold 32px sans-serif';
-            const headerGradient = ctx.createLinearGradient(0, 100, 200, 100);
-            headerGradient.addColorStop(0, '#a78bfa');
-            headerGradient.addColorStop(1, '#ec4899');
+            ctx.font = 'bold 36px sans-serif';
+            const headerGradient = ctx.createLinearGradient(0, 120, 250, 120);
+            headerGradient.addColorStop(0, '#c084fc');
+            headerGradient.addColorStop(1, '#f472b6');
             ctx.fillStyle = headerGradient;
-            ctx.fillText('My Portfolio', 30, 110);
+            ctx.fillText('My Portfolio', 30, 120);
             
-            ctx.font = 'bold 16px sans-serif';
-            ctx.fillStyle = '#a78bfa';
-            ctx.fillText('Full Stack Developer', 30, 135);
+            ctx.font = 'bold 18px sans-serif';
+            ctx.fillStyle = '#c084fc';
+            ctx.fillText('Full Stack Developer', 30, 150);
             
             // Profile card
-            ctx.fillStyle = 'rgba(255, 255, 255, 0.1)';
-            ctx.strokeStyle = 'rgba(167, 139, 250, 0.3)';
-            ctx.lineWidth = 2;
-            ctx.beginPath();
-            ctx.roundRect(30, 160, canvas.width - 60, 80, 16);
-            ctx.fill();
-            ctx.stroke();
+            ctx.fillStyle = 'rgba(255, 255, 255, 0.15)';
+            ctx.strokeStyle = 'rgba(192, 132, 252, 0.4)';
+            ctx.lineWidth = 3;
+            ctx.fillRect(30, 180, canvas.width - 60, 90);
+            ctx.strokeRect(30, 180, canvas.width - 60, 90);
             
             // Avatar
-            const avatarGradient = ctx.createLinearGradient(50, 180, 110, 220);
-            avatarGradient.addColorStop(0, '#a78bfa');
-            avatarGradient.addColorStop(1, '#ec4899');
+            const avatarGradient = ctx.createLinearGradient(50, 200, 120, 250);
+            avatarGradient.addColorStop(0, '#c084fc');
+            avatarGradient.addColorStop(1, '#f472b6');
             ctx.fillStyle = avatarGradient;
             ctx.beginPath();
-            ctx.arc(80, 200, 25, 0, Math.PI * 2);
+            ctx.arc(85, 225, 30, 0, Math.PI * 2);
             ctx.fill();
             
             ctx.fillStyle = '#ffffff';
-            ctx.font = 'bold 20px sans-serif';
-            ctx.fillText('AA', 68, 208);
+            ctx.font = 'bold 24px sans-serif';
+            ctx.fillText('AA', 70, 235);
             
-            ctx.font = 'bold 18px sans-serif';
-            ctx.fillText('Aswin Andro', 120, 195);
-            ctx.font = '14px monospace';
-            ctx.fillStyle = '#a78bfa';
-            ctx.fillText('System Architect', 120, 215);
+            ctx.font = 'bold 20px sans-serif';
+            ctx.fillText('Aswin Andro', 135, 215);
+            ctx.font = 'bold 15px monospace';
+            ctx.fillStyle = '#c084fc';
+            ctx.fillText('System Architect', 135, 240);
             
             // Stats grid
             const stats = [
-                { label: 'Projects', value: '25+', color: '#a78bfa', x: 30, y: 270 },
-                { label: 'Skills', value: '40+', color: '#06b6d4', x: 210, y: 270 },
-                { label: 'Experience', value: '5+ Yrs', color: '#ec4899', x: 30, y: 400 },
-                { label: 'Clients', value: '15+', color: '#10b981', x: 210, y: 400 }
+                { label: 'Projects', value: '25+', color: '#c084fc', x: 30, y: 300 },
+                { label: 'Skills', value: '40+', color: '#06b6d4', x: 215, y: 300 },
+                { label: 'Experience', value: '5+ Yrs', color: '#f472b6', x: 30, y: 440 },
+                { label: 'Clients', value: '15+', color: '#10b981', x: 215, y: 440 }
             ];
             
             stats.forEach(stat => {
-                ctx.fillStyle = `${stat.color}33`;
-                ctx.strokeStyle = `${stat.color}66`;
-                ctx.lineWidth = 2;
-                ctx.beginPath();
-                ctx.roundRect(stat.x, stat.y, 150, 110, 16);
-                ctx.fill();
-                ctx.stroke();
+                ctx.fillStyle = `${stat.color}44`;
+                ctx.strokeStyle = `${stat.color}88`;
+                ctx.lineWidth = 3;
+                ctx.fillRect(stat.x, stat.y, 155, 120);
+                ctx.strokeRect(stat.x, stat.y, 155, 120);
                 
                 ctx.fillStyle = stat.color;
-                ctx.globalAlpha = 0.8;
-                ctx.font = '12px sans-serif';
-                ctx.fillText(stat.label, stat.x + 15, stat.y + 30);
+                ctx.font = 'bold 14px sans-serif';
+                ctx.fillText(stat.label, stat.x + 18, stat.y + 35);
                 
-                ctx.globalAlpha = 1;
-                ctx.font = 'bold 32px sans-serif';
+                ctx.font = 'bold 36px sans-serif';
                 ctx.fillStyle = '#ffffff';
-                ctx.fillText(stat.value, stat.x + 15, stat.y + 70);
+                ctx.fillText(stat.value, stat.x + 18, stat.y + 80);
             });
             
             // Bottom nav
             ctx.fillStyle = '#1a1a1e';
-            ctx.strokeStyle = 'rgba(139, 92, 246, 0.2)';
-            ctx.lineWidth = 2;
-            ctx.beginPath();
-            ctx.roundRect(30, 700, canvas.width - 60, 60, 16);
-            ctx.fill();
-            ctx.stroke();
+            ctx.strokeStyle = 'rgba(192, 132, 252, 0.3)';
+            ctx.lineWidth = 3;
+            ctx.fillRect(30, 690, canvas.width - 60, 70);
+            ctx.strokeRect(30, 690, canvas.width - 60, 70);
             
-            // Nav icons
-            ctx.fillStyle = '#a78bfa';
-            ctx.fillRect(60, 720, 25, 25);
-            ctx.fillStyle = 'rgba(255, 255, 255, 0.1)';
+            // Nav icons (simplified)
+            ctx.fillStyle = '#c084fc';
+            ctx.fillRect(65, 715, 30, 30);
+            
+            ctx.fillStyle = 'rgba(255, 255, 255, 0.15)';
             ctx.beginPath();
-            ctx.arc(155, 732, 12, 0, Math.PI * 2);
-            ctx.fill();
-            ctx.fillRect(220, 720, 25, 25);
-            ctx.beginPath();
-            ctx.arc(315, 732, 12, 0, Math.PI * 2);
+            ctx.arc(170, 730, 15, 0, Math.PI * 2);
             ctx.fill();
             
-            const texture = new THREE.CanvasTexture(canvas);
-            texture.needsUpdate = true;
-            (textureRef as any).current = texture;
+            ctx.fillRect(235, 715, 30, 30);
+            
+            ctx.beginPath();
+            ctx.arc(330, 730, 15, 0, Math.PI * 2);
+            ctx.fill();
+            
+            const newTexture = new THREE.CanvasTexture(canvas);
+            newTexture.needsUpdate = true;
+            newTexture.flipY = false; // Don't flip the texture
+            setTexture(newTexture);
+            
+            console.log('Phone texture created:', newTexture);
+            console.log('Canvas data:', canvas.toDataURL().substring(0, 100));
         }
     }, []);
+
+    const materialRef = useRef<THREE.MeshBasicMaterial>(null);
+    
+    useFrame(() => {
+        if (materialRef.current && texture) {
+            materialRef.current.map = texture;
+            materialRef.current.needsUpdate = true;
+        }
+    });
 
     const shape = useMemo(() => {
         const s = new THREE.Shape();
@@ -361,18 +375,21 @@ const PhoneFrame = () => {
                         <meshStandardMaterial color="#0a0a0a" roughness={0.02} metalness={0.9} />
                     </mesh>
                     
-                    {/* Screen with content */}
-                    <mesh position={[0, 0, 0.21]}>
-                        <planeGeometry args={[4, 8.5]} />
-                        <meshStandardMaterial 
-                            map={(textureRef as any).current}
-                            emissive="#8b5cf6"
-                            emissiveIntensity={0.1}
-                        />
-                    </mesh>
+                    {/* Screen with content - Raised to 0.27 to sit ABOVE the phone body (0.25 extent) */}
+                    {texture && (
+                        <mesh position={[0, 0, 0.27]}>
+                            <planeGeometry args={[4, 8.5]} />
+                            <meshBasicMaterial 
+                                ref={materialRef}
+                                map={texture}
+                                toneMapped={false}
+                                side={THREE.DoubleSide}
+                            />
+                        </mesh>
+                    )}
                     
-                    {/* Notch */}
-                    <mesh position={[0, 4, 0.22]}>
+                    {/* Notch - Raised to 0.32 to sit above screen */}
+                    <mesh position={[0, 4, 0.32]}>
                         <boxGeometry args={[1.5, 0.6, 0.1]} />
                         <meshStandardMaterial color="#0a0a0a" />
                     </mesh>
