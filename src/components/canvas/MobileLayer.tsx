@@ -2,7 +2,7 @@
 
 import { useMemo, useRef, useEffect, useState } from "react";
 import { useFrame } from "@react-three/fiber";
-import { Html, Float, Text } from "@react-three/drei";
+import { Html, Float, Text, useScroll } from "@react-three/drei";
 import * as THREE from "three";
 import { skillsData } from "@/constants";
 
@@ -410,8 +410,33 @@ const PhoneFrame = () => {
 }
 
 export const MobileLayer = () => {
+  const groupRef = useRef<THREE.Group>(null);
+  const scroll = useScroll();
+
+  useFrame(() => {
+    // Transition effect:
+    // Starts animating when scroll is at 60%, fully evolved by 85%
+    // Matches the camera movement t: 0.83 (where -25y is)
+    const t = scroll.range(0.6, 0.25);
+    
+    if (groupRef.current) {
+        // Smooth scale in
+        const scale = 0.5 + (t * 0.5); 
+        groupRef.current.scale.setScalar(scale);
+
+        // Smooth opacity effect (simulated via y-position rise)
+        // It rises from -35 to -25 visually (relative to parent 0)
+        // Actually parent is at -25. Let's offset y.
+        // Start 10 units lower, rise to 0.
+        groupRef.current.position.y = -25 + ((1 - t) * -10);
+        
+        // Tilt forward approach
+        groupRef.current.rotation.x = (1 - t) * 0.5;
+    }
+  });
+
   return (
-    <group position={[0, -25, 0]}>
+    <group ref={groupRef} position={[0, -25, 0]}>
         <BrowserStack />
         <PhoneFrame />
         <Text
